@@ -11,6 +11,7 @@ def read_fastq(path: str) -> Union[dict, str]:
     :return: Dictionary with FASTQ-sequences and path to the file with sequences in FASTQ format. The last one is
     necessary for the tool to work correctly.
     """
+    seq_alphabet = {'A', 'T', 'G', 'C'}
     personal_path = path
     fastq_dict = {}
     name = ''
@@ -19,7 +20,7 @@ def read_fastq(path: str) -> Union[dict, str]:
         for line in seq_fastq:
             if line.startswith('@SRX079804'):
                 name = line.split(' ')[0]
-            elif set(line.strip()) <= SEQ_ALPHABET:
+            elif set(line.strip()) <= seq_alphabet:
                 seq_and_quality += [line.strip()]
             elif line.startswith('+'):
                 continue
@@ -78,10 +79,10 @@ def analyse_quality(quality: str) -> float:
     return round(q_score_sum,2)
 
 
-def write_fastq(seqs, personal_path, new_file_name):
+def write_fastq(fastq_dict, personal_path, new_file_name):
     """
     The function writes filtered FASTQ reads into new file and save it into folder "fastq_filtrator_resuls".
-    :param seqs: path to the file with sequences in FASTQ format
+    :param seqs: dictionary with filtered sequences
     :type seqs: dict
     :param personal_path: path to the file with original sequences in FASTQ format
     :type personal_path: str
