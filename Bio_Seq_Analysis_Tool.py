@@ -41,10 +41,10 @@ def dna_rna_analysis(*args: str, operation: str) -> Union[List[float], List[str]
     return analysis
 
 
-def analyse_fastq(seqs: dict, 
+def analyse_fastq(input_path: str, 
                   gc_bounds: Union[int, float, Tuple [int], Tuple [float]] = (0, 100), 
                   length_bounds: Union[int, Tuple [int]] = (0, 2**32),
-                  quality_threshold: float = 0.0) -> Dict[str,str]:
+                  quality_threshold: float = 0.0, filtered_file_name: Union[None, str] = None) -> Dict[str,str]:
     """
     This function help analyze a set of reads obtained from next-generation sequencing. 
     
@@ -52,9 +52,8 @@ def analyse_fastq(seqs: dict,
     GC-content, length and reading quality.
     
     :param seqs: 
-    A dictionary consisting of fastq sequences. The structure is as follows: Key - string, sequence name. 
-    The value is a tuple of two strings: sequence and quality. The sequence is RNA or DNA.  
-    :type seqs: Dict[str]
+    Path to the file with FASTQ-sequences in the format. 
+    :type seqs: str
     
     :param gc_bounds: 
     Boundary parameters for filtering sequences by GC-content. Save only reads with a GC-content between boundaries 
@@ -79,6 +78,8 @@ def analyse_fastq(seqs: dict,
     
     :raises ValueError: if sequence not RNA or DNA, also if the argument values are outside the allowed ones
     """
+    seqs, path_to_file = fq.read_fastq(input_path)
+    file_name = path_to_file.split("\\")[-1]
     if type(gc_bounds) == float or type(gc_bounds) == int:
         gc_bounds = (0,gc_bounds)
         if gc_bounds[0] < 0 or gc_bounds[1] > 100:
@@ -92,8 +93,6 @@ def analyse_fastq(seqs: dict,
     analysed_seq = {}
     error_seq = {}
     for seq in seqs.items():
-        if fq.is_nucleotide(seq[1][0]) != True:
-            raise TypeError(f'Wrong sequence format')        
         if fq.analyse_gc(seq[1][0]) > gc_bounds[0] and fq.analyse_gc(seq[1][0]) < gc_bounds[1]:
             if fq.analyse_length(seq[1][0]) > length_bounds[0] and fq.analyse_length(seq[1][0]) < length_bounds[1]:
                 if fq.analyse_quality(seq[1][1]) > quality_threshold:
@@ -104,7 +103,12 @@ def analyse_fastq(seqs: dict,
                 error_seq[seq[0]] = (seq[1])
         else:
             error_seq[seq[0]] = (seq[1])
-    return analysed_seq, error_seq
+    if filtered_file_name == None:
+        new_file_name = file_name 
+    else:
+        new_file_name = filtered_file_name
+    fq.write_fastq(analysed_seq, path_to_file, new_file_name)
+    return error_seq
 
 
 def run_protein_analysis(*args: str) -> Union[List[str], List[float]]:
