@@ -79,7 +79,7 @@ def analyse_fastq(input_path: str,
     :raises ValueError: if sequence not RNA or DNA, also if the argument values are outside the allowed ones
     """
     seqs, path_to_file = fq.read_fastq(input_path)
-    file_name = path_to_file.split("\\")[-1]
+    file_name = path_to_file.split("/")[-1]
     if type(gc_bounds) == float or type(gc_bounds) == int:
         gc_bounds = (0,gc_bounds)
         if gc_bounds[0] < 0 or gc_bounds[1] > 100:
