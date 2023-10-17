@@ -19,13 +19,92 @@ Key packages and programs:
 ## Usage
 
 ```python
-# import main function
+# import main function Bio_Seq_Analysis_Tool
 from Bio_Seq_Analysis_Tool import Bio_Seq_Analysis_Tool
+
+# import main function Bio_Files_Processor
+from Bio_Files_Processor import Bio_Files_Processor
 ```      
 
 ## Works with main functions
 
-This section contains description of Bio_Seq_Analysis_Tool main functions.
+This section contains description of two main scripts: Bio_Files_Processor and Bio_Seq_Analysis_Tool
+
+## Bio_Files_Processor
+
+Functions from this script help you to analyze genomic data from different database saved into standard format of these storages.
+
+### convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = None) -> str
+
+Function conver multiline fasta file into fasta with name line marked by '>' and the other line with sequence. Results save in new file into new folder "Converted_data". If the folder already exists, new data is written to it.
+
+**Parameters:**
+
+-**input_fasta**: *str*
+
+Path to fasta-file with your seqs with. !! It is necessary to indicate the name along with extensions (.fasta) !! In function exist check for correct format.
+
+-**output_fasta**: *str* 
+
+Name of new fasta-file with your seqs in one line, default value = None. It is necessary to indicate the name along with extensions (.fasta)
+
+**Returns:**
+
+Script completion message
+
+**Example**
+
+```python
+convert_multiline_fasta_to_oneline('./data_example/example_multiline_fasta.fasta') # 'All sequences processed!'
+```
+Structure of new file with FASTA-seq:
+'>_name:
+sequence'
+
+### select_genes_from_gbk_to_fasta(input_gbk: str, genes: List[str], n_before: int = 1, n_after: int = 1, output_fasta: str = None) -> str
+
+Function help to search neighbours of GOI (gene of interest). Function writes neighbours of GOI in new FASTA-file  as: name of gene, protein sequence. Results save into new folder "Analyzed_data". If the folder already exists, new data is written to it.
+
+**Parameters:**
+
+-**input_gbk**: *str*
+
+Path to gbk-file with your seqs with. !! It is necessary to indicate the name along with extensions (.gbk) !! In function exist check for correct format.
+
+-**genes**: *List[str]* 
+
+Gene of interest names.
+
+Example of input:
+```python
+['pndA']
+```
+-**n_before**: *int*
+
+Number of genes before GOI (>0), default value = 1
+
+-**n_after**: *int*
+
+number of genes after GOI (>0), default value = 1
+
+-**output_fasta**: *str* 
+
+Name of new fasta-file with your seqs, default value = None. It is necessary to indicate the name along with extensions (.fasta)
+
+**Returns:**
+Script completion message
+
+**Example**
+```python
+select_genes_from_gbk_to_fasta('.\\example_data\\example_gbk.gbk', ['pndA'], 2, 2) # 'All sequences processed!'
+```
+Structure of new file with FASTA-seq:
+'> gene_name:
+protein_sequence'
+
+## Bio_Seq_Analysis_Tool
+
+Main functions from this script help you to analyze different types of bio sequences: DNA, RNA, NGS-reads, protein
 
 ### dna_rna_analysis(*args: str, operation: str)
 
