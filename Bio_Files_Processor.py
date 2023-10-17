@@ -15,6 +15,8 @@ def convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = Non
     :rtype: str
     :return: Script completion message 
     """
+    if input_fasta.find('.fasta') == 0:
+        raise ValueError(f'Wrong file format in input!')
     if os.path.exists(os.path.join('.', 'Converted_data')) == False:
         os.mkdir(os.path.join('.', 'Converted_data'))
     if output_fasta == None:
