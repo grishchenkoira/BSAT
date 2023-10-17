@@ -93,8 +93,8 @@ def analyse_fastq(input_path: str,
     analysed_seq = {}
     error_seq = {}
     for seq in seqs.items():
-        if fq.analyse_gc(seq[1][0]) > gc_bounds[0] and fq.analyse_gc(seq[1][0]) < gc_bounds[1]:
-            if fq.analyse_length(seq[1][0]) > length_bounds[0] and fq.analyse_length(seq[1][0]) < length_bounds[1]:
+        if fq.analyse_gc(seq[1][0]) >= gc_bounds[0] and fq.analyse_gc(seq[1][0]) <= gc_bounds[1]:
+            if fq.analyse_length(seq[1][0]) >= length_bounds[0] and fq.analyse_length(seq[1][0]) <= length_bounds[1]:
                 if fq.analyse_quality(seq[1][1]) > quality_threshold:
                     analysed_seq[seq[0]] = (seq[1])
                 else:
