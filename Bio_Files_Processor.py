@@ -18,7 +18,7 @@ def convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = Non
     if os.path.exists(os.path.join('.', 'Converted_data')) == False:
         os.mkdir(os.path.join('.', 'Converted_data'))
     if output_fasta == None:
-        out_name = 'one_line_' + input_fasta
+        out_name = 'one_line_' + input_fasta.strip("/")[-1]
     else:
         out_name = output_fasta
     counter = 0
