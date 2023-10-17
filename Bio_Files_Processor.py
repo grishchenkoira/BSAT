@@ -20,7 +20,7 @@ def convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = Non
     if output_fasta == None:
         out_name = 'one_line_' + input_fasta
     else:
-        out_path = os.path.abspath(output_fasta)
+        out_name = output_fasta
     counter = 0
     with open (input_fasta) as seq_fasta:
         for line in seq_fasta:
