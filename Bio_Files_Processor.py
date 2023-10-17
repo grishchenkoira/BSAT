@@ -54,7 +54,7 @@ def select_genes_from_gbk_to_fasta(input_gbk: str, genes: List[str], n_before: i
     !! It is necessary to indicate the name along with extensions (.gbk) !!
     :type input_gbk: str
     :param genes: Gene of interest names
-    :type genes: str
+    :type genes: List[str]
     :param n_before: number of genes before GOI (>0), default value = 1
     :type n_before: int
     :param n_after: number of genes after GOI (>0), default value = 1
@@ -65,6 +65,8 @@ def select_genes_from_gbk_to_fasta(input_gbk: str, genes: List[str], n_before: i
     :return: Script completion message
     
     '''
+    if input_gbk.find('.gbk') == 0:
+        raise ValueError(f'Wrong file format in input!')
     if os.path.exists(os.path.join('.', 'Analyzed_data')) == False:
         os.mkdir(os.path.join('.', 'Analyzed_data'))
     genes_for_search = genes
