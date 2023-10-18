@@ -23,26 +23,28 @@ def convert_multiline_fasta_to_oneline(input_fasta: str, output_fasta: str = Non
         out_name = 'one_line_' + input_fasta.strip("/")[-1]
     else:
         out_name = output_fasta
-    counter = 0
+    gene = 0
+    seq = 0
+    gene_name = ''
+    prot_seq = ''
+    gene_and_seq = dict()
     with open (input_fasta) as seq_fasta:
         for line in seq_fasta:
-            if counter == 0:
-                if line.startswith('>'):
-                    with open (os.path.join('.', 'Converted_data', out_name), mode = 'w') as new_seq_fasta:
-                        new_seq_fasta.write(line)
-                    counter += 1
-                    continue
+            if gene == 1:
+                if line.startswith('>') == False:
+                    gene_and_seq[gene_name] += line.strip('\n')
                 else:
-                    raise ValueError('Wrong start of FASTA')
-            if counter != 0:
-                if line.startswith('>'):
-                    with open (os.path.join('.', 'Converted_data', out_name), mode = 'a') as new_seq_fasta:
-                        new_seq_fasta.write('\n' + line)
-                else:
-                    with open (os.path.join('.', 'Converted_data', out_name), mode = 'a') as new_seq_fasta:
-                        new_seq_fasta.write(line.strip('\n'))
-                    continue
-        return 'All sequences processed!'
+                    gene_name = line.strip('\n')
+                    gene_and_seq[gene_name] = ''
+            if gene == 0 and line.startswith('>'):
+                gene_name = line.strip('\n')
+                gene_and_seq[gene_name] = ''
+                gene = 1
+    with open (os.path.join('.', 'Converted_data', out_name), mode = 'w') as new_seq_fasta:
+        for key, item in gene_and_seq.items():
+            new_seq_fasta.write(key + '\n')
+            new_seq_fasta.write(item + '\n')
+    return 'All sequences processed!'
 
 
 def select_genes_from_gbk_to_fasta(input_gbk: str, genes: List[str], n_before: int = 1, n_after: int = 1, 
