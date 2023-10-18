@@ -96,18 +96,25 @@ def select_genes_from_gbk_to_fasta(input_gbk: str, genes: List[str], n_before: i
             for i in range(1, n_after):
                 neighbour_genes[(genes_gbk[0 + i])] = 0
     with open (input_gbk) as gbk:
-        counter = 0
+        gene_name_read = 0
+        protein_read = 0
         gene_name = ''
+        protein = ''
         for line in gbk:
-            for key in neighbour_genes:
-                if key in line:
-                    counter = 1
-                    gene_name = key
-                    continue
-            if counter != 0 and '/translation' in line:
-                counter = 0
-                neighbour_genes[gene_name] = line.strip().split('=')[1]
-                continue
+            if '/gene' in line:
+                gene_name = line.strip().split('=')[1]
+                if gene_name in neighbour_genes:
+                    gene_name_read = 1
+            if protein_read == 1:
+                protein += line.strip('\n').strip(' ')
+                if '"' in line:
+                    protein_read = 0
+                    gene_name_read = 0
+                    neighbour_genes[gene_name] = protein
+                    protein = ''
+            if gene_name_read == 1 and '/translation' in line:
+                protein_read = 1
+                protein += line.strip().split('=')[1]
     with open (os.path.join('.', 'Analyzed_data', output_fasta), mode = 'w') as fasta:
         for name, seq in neighbour_genes.items():
             name = '>'+name.replace('\"','')
